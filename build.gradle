@@ -1,0 +1,80 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.cloudfoundry', name: 'cf-gradle-plugin', version: '1.1.2'
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
+        classpath 'io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE'
+    }
+}
+
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+apply plugin: 'cloudfoundry'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+ext {
+    appName = 'bluemix-boot'
+    version = '0.1.0'
+}
+
+war {
+    baseName = appName
+    version =  version
+}
+
+jar {
+    baseName = appName
+    version =  version
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.spring.platform:platform-bom:1.1.2.RELEASE'
+    }
+}
+
+configurations {
+    providedRuntime
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all"
+    compile("org.springframework.boot:spring-boot-starter-web") 
+    //compile("org.springframework.boot:spring-boot-starter-actuator")
+    //test
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile "org.spockframework:spock-core"
+    testCompile 'org.spockframework:spock-spring:0.7-groovy-2.0'
+    
+   providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+   
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
+cloudfoundry {
+    target = 'https://api.eu-gb.bluemix.net'
+    space = 'dev'
+    username = cfUsername
+    password = cfPassword
+    organization = cfOrganization
+    space = cfSpace
+    file = file("${war.archivePath}")
+   // uri = "http://${appName}.mybluemix.net"
+    env = [
+            "JBP_CONFIG_SPRINGAUTORECONFIGURATION": "[enabled: false]"
+    ]
+}
