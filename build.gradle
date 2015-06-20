@@ -51,7 +51,7 @@ configurations {
 dependencies {
     compile "org.codehaus.groovy:groovy-all"
     compile("org.springframework.boot:spring-boot-starter-web") 
-    //compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
     //test
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile "org.spockframework:spock-core"
@@ -73,7 +73,7 @@ cloudfoundry {
     organization = cfOrganization
     space = cfSpace
     file = file("${war.archivePath}")
-   // uri = "http://${appName}.mybluemix.net"
+    uri = "${appName}.eu-gb.mybluemix.net"
     env = [
             "JBP_CONFIG_SPRINGAUTORECONFIGURATION": "[enabled: false]"
     ]
