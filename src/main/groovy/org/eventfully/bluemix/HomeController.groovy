@@ -4,11 +4,11 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 
 @RestController
-class GroovyController {
+class HomeController {
 
-    @RequestMapping("/groovy")
-    String groovy() {
-        return "Hello Groovy@Bluemix!"
+    @RequestMapping("/")
+    String index() {
+        return "Hello from Spring Boot Groovy@Bluemix!"
     }
 
 }

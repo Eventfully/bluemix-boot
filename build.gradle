@@ -22,6 +22,7 @@ targetCompatibility = 1.7
 ext {
     appName = 'bluemix-boot'
     version = '0.1.0'
+    camelVersion = '2.15.2'
 }
 
 war {
@@ -46,12 +47,24 @@ dependencyManagement {
 
 configurations {
     providedRuntime
+    all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+
 }
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all"
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.boot:spring-boot-starter-log4j")
     compile("org.springframework.boot:spring-boot-starter-web") 
     compile("org.springframework.boot:spring-boot-starter-actuator")
+
+    compile "org.apache.camel:camel-spring-boot:$camelVersion"
+    compile "org.apache.camel:camel-groovy:$camelVersion"
+    compile "org.apache.camel:camel-mqtt:$camelVersion"
+    compile "org.apache.camel:camel-stream:$camelVersion"
+    compile "org.apache.camel:camel-twitter:$camelVersion"
+//    compile "org.apache.camel:camel-elasticsearch:$camelVersion"
+
     //test
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile "org.spockframework:spock-core"
@@ -74,6 +87,7 @@ cloudfoundry {
     space = cfSpace
     file = file("${war.archivePath}")
     uri = "${appName}.eu-gb.mybluemix.net"
+    application = "${appName}"
     env = [
             "JBP_CONFIG_SPRINGAUTORECONFIGURATION": "[enabled: false]"
     ]
