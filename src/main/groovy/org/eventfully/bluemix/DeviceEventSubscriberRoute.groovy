@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-class MqttWeldingEventSubscriberRoute extends RouteBuilder {
+class DeviceEventSubscriberRoute extends RouteBuilder {
 
     @Override
     /**
@@ -15,18 +15,16 @@ class MqttWeldingEventSubscriberRoute extends RouteBuilder {
      */
     void configure() throws Exception {
 
-        def mqttClientId='a:xlemsm:bluemix-boot'
-        def mqttHost='tcp://xlemsm.messaging.internetofthings.ibmcloud.com:1883'
+        def mqttClientId = System.getenv('IOT_CLIENTID') ?: 'a:yxjgdu:bluemix-boot'
+        def mqttHost = System.getenv('IOT_HOST') ?: 'tcp://yxjgdu.messaging.internetofthings.ibmcloud.com:1883'
         def mqttTopicName = 'iot-2/type/+/id/+/evt/+/fmt/json'
-        def mqttUserName = 'a-xlemsm-alxzj0ia9c'
-        def mqttPassword = 'dRArb!WYm-DYZJWayE'
+        def mqttUserName = System.getenv('IOT_USERNAME') ?: 'a-yxjgdu-bkj3sw37hj'
+        def mqttPassword = System.getenv('IOT_PASSWORD') ?: '@Q*!0b!!hIj1!qH?!v'
 
         def mqttURI = "mqtt:bluemix-boot?host=${mqttHost}&subscribeTopicName=${mqttTopicName}&userName=${mqttUserName}&password=${mqttPassword}&clientId=${mqttClientId}"
 
-        log.error "mqttURI: ${mqttURI}"
-
         from(mqttURI)
-                .routeId("DeviceRoute")
+                .routeId("{{event.id}}")
                 .streamCaching()
                 .log(LoggingLevel.INFO, "org.eventfully.bluemix", 'Log inbound: ${body}')
                 .convertBodyTo(String)

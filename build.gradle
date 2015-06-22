@@ -3,8 +3,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.cloudfoundry', name: 'cf-gradle-plugin', version: '1.1.2'
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
+        classpath 'org.cloudfoundry:cf-gradle-plugin:1.1.2'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE'
         classpath 'io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE'
     }
 }
@@ -14,7 +14,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
-//apply plugin: 'cloudfoundry'
+apply plugin: 'cloudfoundry'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -62,7 +62,7 @@ dependencies {
     compile "org.apache.camel:camel-groovy:$camelVersion"
     compile "org.apache.camel:camel-mqtt:$camelVersion"
     compile "org.apache.camel:camel-stream:$camelVersion"
-    compile "org.apache.camel:camel-twitter:$camelVersion"
+//    compile "org.apache.camel:camel-twitter:$camelVersion"
 //    compile "org.apache.camel:camel-elasticsearch:$camelVersion"
 
     //test
@@ -77,19 +77,18 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
-/*
+
 cloudfoundry {
-    target = 'https://api.eu-gb.bluemix.net'
+    target = 'https://api.ng.bluemix.net'
     space = 'dev'
     username = cfUsername
     password = cfPassword
     organization = cfOrganization
     space = cfSpace
     file = file("${war.archivePath}")
-    uri = "${appName}.eu-gb.mybluemix.net"
+    uri = "${appName}.mybluemix.net"
     application = "${appName}"
     env = [
             "JBP_CONFIG_SPRINGAUTORECONFIGURATION": "[enabled: false]"
     ]
 }
-*/
