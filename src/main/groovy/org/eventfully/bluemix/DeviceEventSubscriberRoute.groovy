@@ -18,10 +18,12 @@ class DeviceEventSubscriberRoute extends RouteBuilder {
         def mqttClientId = System.getenv('IOT_CLIENTID') ?: 'a:yxjgdu:bluemix-boot'
         def mqttHost = System.getenv('IOT_HOST') ?: 'tcp://yxjgdu.messaging.internetofthings.ibmcloud.com:1883'
         def mqttTopicName = 'iot-2/type/+/id/+/evt/+/fmt/json'
-        def mqttUserName = System.getenv('IOT_USERNAME') ?: 'a-yxjgdu-bkj3sw37hj'
-        def mqttPassword = System.getenv('IOT_PASSWORD') ?: '@Q*!0b!!hIj1!qH?!v'
+        def mqttUserName = System.getenv('IOT_USERNAME') ?: 'a-yxjgdu-paid3bqm3k'
+        def mqttPassword = System.getenv('IOT_PASSWORD') ?: 'l1ykKxQn0x&n6j6M-K'
 
-        def mqttURI = "mqtt:bluemix-boot?host=${mqttHost}&subscribeTopicName=${mqttTopicName}&userName=${mqttUserName}&password=${mqttPassword}&clientId=${mqttClientId}"
+        log.debug("VCAP_SERVICES: " + System.getenv('VCAP_SERVICES'))
+
+        def mqttURI = "mqtt:bluemix-boot?host=${mqttHost}&subscribeTopicName=${mqttTopicName}&userName=${mqttUserName}&password=RAW(${mqttPassword})&clientId=${mqttClientId}"
 
         from(mqttURI)
                 .routeId("{{event.id}}")

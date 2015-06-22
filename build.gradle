@@ -92,4 +92,14 @@ cloudfoundry {
     env = [
             "JBP_CONFIG_SPRINGAUTORECONFIGURATION": "[enabled: false]"
     ]
+
+    services {
+        'iotf-service' {
+            label = 'iotf-service'
+            plan = 'iotf-service-free'
+            name = 'bluemix-mqtt'
+            bind = true
+        }
+    }
+
 }
