@@ -14,7 +14,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
-apply plugin: 'cloudfoundry'
+//apply plugin: 'cloudfoundry'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -77,7 +77,7 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
-
+/*
 cloudfoundry {
     target = 'https://api.eu-gb.bluemix.net'
     space = 'dev'
@@ -92,3 +92,4 @@ cloudfoundry {
             "JBP_CONFIG_SPRINGAUTORECONFIGURATION": "[enabled: false]"
     ]
 }
+*/
