@@ -1,12 +1,34 @@
 package org.eventfully.bluemix
 
+import groovy.json.JsonSlurper
 import org.apache.camel.LoggingLevel
 import org.apache.camel.builder.RouteBuilder
-import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
 @Component
 class DeviceEventSubscriberRoute extends RouteBuilder {
+
+    private final static String VCAP_SERVICES = '''
+{
+  "iotf-service" : [ {
+    "name" : "bluemix-mqtt",
+    "label" : "iotf-service",
+    "plan" : "iotf-service-free",
+    "credentials" : {
+      "iotCredentialsIdentifier" : "a2g6k39sl6r5",
+      "mqtt_host" : "abc.messaging.internetofthings.ibmcloud.com",
+      "mqtt_u_port" : 1883,
+      "mqtt_s_port" : 8883,
+      "base_uri" : "https://internetofthings.ibmcloud.com:443/api/v0001",
+      "org" : "yxjgdu",
+      "apiKey" : "abc",
+      "apiToken" : "abc"
+    }
+  } ]
+}
+'''
 
     @Override
     /**
@@ -15,15 +37,27 @@ class DeviceEventSubscriberRoute extends RouteBuilder {
      */
     void configure() throws Exception {
 
-        def mqttClientId = System.getenv('IOT_CLIENTID') ?: 'a:yxjgdu:bluemix-boot'
-        def mqttHost = System.getenv('IOT_HOST') ?: 'tcp://yxjgdu.messaging.internetofthings.ibmcloud.com:1883'
-        def mqttTopicName = 'iot-2/type/+/id/+/evt/+/fmt/json'
-        def mqttUserName = System.getenv('IOT_USERNAME') ?: 'a-yxjgdu-paid3bqm3k'
-        def mqttPassword = System.getenv('IOT_PASSWORD') ?: 'l1ykKxQn0x&n6j6M-K'
-
         log.debug("VCAP_SERVICES: " + System.getenv('VCAP_SERVICES'))
+        String vcapServices = System.getenv('VCAP_SERVICES') ?: VCAP_SERVICES
 
-        def mqttURI = "mqtt:bluemix-boot?host=${mqttHost}&subscribeTopicName=${mqttTopicName}&userName=${mqttUserName}&password=RAW(${mqttPassword})&clientId=${mqttClientId}"
+        def jsonSlurper = new JsonSlurper()
+        def servicesJson = jsonSlurper.parseText(vcapServices)
+
+        def creds = servicesJson?.'iotf-service'?.credentials.collectEntries()
+
+        String mqtt_host = creds.mqtt_host
+        String mqtt_u_port = creds.mqtt_u_port
+        String apiKey = creds.apiKey
+        String org = creds.org
+        String apiToken = creds.apiToken
+
+        def mqttClientId = "a:${org}:bluemix-boot"
+        def mqttHost = "${mqtt_host}:${mqtt_u_port}"
+        def mqttTopicName = 'iot-2/type/+/id/+/evt/+/fmt/json'
+        def mqttUserName = apiKey
+        def mqttPassword = apiToken
+
+        def mqttURI = "mqtt:bluemix-boot?host=tcp://${mqttHost}&subscribeTopicName=${mqttTopicName}&userName=${mqttUserName}&password=RAW(${mqttPassword})&clientId=${mqttClientId}"
 
         from(mqttURI)
                 .routeId("{{event.id}}")
