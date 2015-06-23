@@ -1,5 +1,6 @@
 # bluemix-boot
-Simple Spring Boot app with Bluemix configuration
+Simple Spring Boot app with Bluemix configuration.
+
 Now with IoT (MQTT) service and Apache Camel.
 
 ## Register and login
@@ -60,14 +61,15 @@ Add an Internet of Things IBM service and bind it directly when creating it
 Add Service -> App: 'bluemix-boot' -> Service Name: 'bluemix-mqtt' -> Selected Plan 'Free' -> Create
 The service should then both be created and bound to the bluemix-boot app.
 The trick that took me forever to understand was to add the following section to the CF gradle plugin:
+
     services {
-            'iotf-service' {
-                label = 'iotf-service'
-                plan = 'iotf-service-free'
-                name = 'bluemix-mqtt'
-                bind = true
-            }
+        'iotf-service' {
+            label = 'iotf-service'
+            plan = 'iotf-service-free'
+            name = 'bluemix-mqtt'
+            bind = true
         }
+    }
 
 This is taken from the credentials section on the service found in the dashboard.
 The VCAP_SERVICES environment variable contains a JSON describing all bound services including their credentials.
