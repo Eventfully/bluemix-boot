@@ -1,5 +1,6 @@
 # bluemix-boot
 Simple Spring Boot app with Bluemix configuration
+Now with IoT (MQTT) service and Apache Camel.
 
 ## Register and login
 Register for a free 30 days account.
@@ -54,7 +55,33 @@ Note that push does not build, so you need to build then push using: `gradlew bu
 
     Total time: 3 mins 33.94 secs
 
+## Using Internet of Things - IoT IBM Service
+Add an Internet of Things IBM service and bind it directly when creating it
+Add Service -> App: 'bluemix-boot' -> Service Name: 'bluemix-mqtt' -> Selected Plan 'Free' -> Create
+The service should then both be created and bound to the bluemix-boot app.
+The trick that took me forever to understand was to add the following section to the CF gradle plugin:
+    services {
+            'iotf-service' {
+                label = 'iotf-service'
+                plan = 'iotf-service-free'
+                name = 'bluemix-mqtt'
+                bind = true
+            }
+        }
+
+This is taken from the credentials section on the service found in the dashboard.
+The VCAP_SERVICES environment variable contains a JSON describing all bound services including their credentials.
+This is used directly in the creation of the Camel route to avoid having to hard-code or configure the credentials.
+The Spring Cloud might contain things that could be used for this instead but this was the simplest way to get it in place as of now.
+Think it will be cleaner to put this in ApplicationConfig.groovy later.
+
+## IoT simple groovy device
+Read the docs how to add a device in the IoT console. Notice the syntax for allowed values in the topic string.
+[Simple IoT groovy client](https://gist.github.com/magnuspalmer/bdc89e8f19ed76cf0799)
+
 ## Spring Boot Actuator
+Seems like the Liberty buildpack adds its own management stuff, so Spring actuator might not be needed.
+Unless more is more?
 [Spring Reference: endpoints](http://docs.spring.io/spring-boot/docs/1.1.2.RELEASE/reference/htmlsingle/#production-ready-endpoints)
 
 ## Links
